@@ -1,19 +1,9 @@
-const backFaces = [
-    "metalparrot",
-    "bobrossparrot",
-    "explodyparrot",
-    "fiestaparrot",
-    "revertitparrot",
-    "tripletsparrot",
-    "unicornparrot",
-];
+// Inicio do setup
 let aswers = [];
-
 function setupGame() {
     const numberOfCards = getNumberOfCards();
     generateAnswers(numberOfCards);
     generateCards(numberOfCards);
-    
 }
 function getNumberOfCards() {
     let input = Number(prompt("Com quantas cartas deseja jogar?"));
@@ -29,8 +19,7 @@ function generateAnswers(numberOfCards) {
     }
     shuffle(aswers);
 }
-// Peguei esse aqui no StackOverflow, parece ser mais eficiente
-function shuffle(array) {
+function shuffle(array) { // Peguei esse aqui no StackOverflow, parece ser mais eficiente
     let currentIndex = array.length,  randomIndex;
     while (0 !== currentIndex) {
       randomIndex = Math.floor(Math.random() * currentIndex);
@@ -41,9 +30,18 @@ function shuffle(array) {
     return array;
 }
 function generateCards(numberOfCards) {
+    const backFaces = [
+        "metalparrot",
+        "bobrossparrot",
+        "explodyparrot",
+        "fiestaparrot",
+        "revertitparrot",
+        "tripletsparrot",
+        "unicornparrot",
+    ];
     const gameArea = document.querySelector(".content");
     for (let i = 0; i < numberOfCards; i++) {
-        gameArea.innerHTML += `<div class="card" onclick="classList.toggle('virada')">
+        gameArea.innerHTML += `<div class="card" onclick="turnCard(this)">
         <div class="front-face face">
             <img src="images/front.png">
         </div>
@@ -51,5 +49,38 @@ function generateCards(numberOfCards) {
             <img src="images/${backFaces[aswers[i]]}.gif">
         </div>
     </div>`;
+    }
+}
+// Fim do setup
+
+// Inicio da Gameplay
+let firstOfPair = true, firstCard, secondCard;
+let score = 0;
+function verifyPlay(card) {
+    if (!(card.classList.contains("turned"))){
+        turnCard(card);
+    }
+}
+function turnCard(card){
+    card.classList.add('turned')
+    if (firstOfPair){
+        firstCard = card;
+        firstOfPair = false;
+    }else{
+        secondCard = card;
+        verifyPoint()
+        firstOfPair = true;
+    }
+}
+function verifyPoint(){
+    if (firstCard.innerHTML === secondCard.innerHTML){
+        firstCard = null;
+        secondCard = null;
+        score++;
+    }else{
+        setTimeout(function () {
+            firstCard.classList.remove("turned");
+            secondCard.classList.remove("turned");
+        }, 1000);
     }
 }
