@@ -1,7 +1,9 @@
 // Inicio do setup
 let aswers = [];
+let numberOfCards;
+setupGame()
 function setupGame() {
-    const numberOfCards = getNumberOfCards();
+    numberOfCards = getNumberOfCards();
     generateAnswers(numberOfCards);
     generateCards(numberOfCards);
 }
@@ -41,7 +43,7 @@ function generateCards(numberOfCards) {
     ];
     const gameArea = document.querySelector(".content");
     for (let i = 0; i < numberOfCards; i++) {
-        gameArea.innerHTML += `<div class="card" onclick="turnCard(this)">
+        gameArea.innerHTML += `<div class="card" onclick="verifyPlay(this)">
         <div class="front-face face">
             <img src="images/front.png">
         </div>
@@ -54,22 +56,31 @@ function generateCards(numberOfCards) {
 // Fim do setup
 
 // Inicio da Gameplay
-let firstOfPair = true, firstCard, secondCard;
+let isFirstOfPair = true, firstCard, secondCard;
 let score = 0;
+let playCount = 0;
+let antiSpam = false; // Impede o usuario de clickar enquanto o as cartas desviram
 function verifyPlay(card) {
-    if (!(card.classList.contains("turned"))){
+    if (!(card.classList.contains("turned")) && !antiSpam){
+        if (!isFirstOfPair){
+            antiSpam = true;
+            setTimeout(function () {
+                antiSpam = false;
+            }, 1200)
+        }
+        playCount++;
         turnCard(card);
     }
 }
 function turnCard(card){
     card.classList.add('turned')
-    if (firstOfPair){
+    if (isFirstOfPair){
         firstCard = card;
-        firstOfPair = false;
+        isFirstOfPair = false;
     }else{
         secondCard = card;
         verifyPoint()
-        firstOfPair = true;
+        isFirstOfPair = true;
     }
 }
 function verifyPoint(){
@@ -82,5 +93,11 @@ function verifyPoint(){
             firstCard.classList.remove("turned");
             secondCard.classList.remove("turned");
         }, 1000);
+    }
+    setTimeout(verifyEndgame, 500);
+}
+function verifyEndgame() {
+    if (score === (numberOfCards / 2)){
+        alert(`Você ganhou em ${playCount} jogadas!`)
     }
 }
