@@ -1,11 +1,10 @@
 // Inicio do setup
-let aswers = [];
 let numberOfCards;
 setupGame()
 function setupGame() {
     numberOfCards = getNumberOfCards();
-    generateAnswers(numberOfCards);
-    generateCards(numberOfCards);
+    aswers = generateAnswers(numberOfCards);
+    generateCards(numberOfCards, aswers);
 }
 function getNumberOfCards() {
     let input = Number(prompt("Com quantas cartas deseja jogar?"));
@@ -15,11 +14,13 @@ function getNumberOfCards() {
     return input;
 }
 function generateAnswers(numberOfCards) {
+    let aswers = [];
     for (let key = 0; key < numberOfCards / 2; key ++) {
         aswers.push(key);
         aswers.push(key);       
     }
     shuffle(aswers);
+    return aswers;
 }
 function shuffle(array) { // Peguei esse aqui no StackOverflow, parece ser mais eficiente
     let currentIndex = array.length,  randomIndex;
@@ -31,7 +32,7 @@ function shuffle(array) { // Peguei esse aqui no StackOverflow, parece ser mais 
     }
     return array;
 }
-function generateCards(numberOfCards) {
+function generateCards(numberOfCards, aswers) {
     const backFaces = [
         "metalparrot",
         "bobrossparrot",
@@ -42,6 +43,7 @@ function generateCards(numberOfCards) {
         "unicornparrot",
     ];
     const gameArea = document.querySelector(".content");
+    gameArea.innerHTML = "";
     for (let i = 0; i < numberOfCards; i++) {
         gameArea.innerHTML += `<div class="card" onclick="verifyPlay(this)">
         <div class="front-face face">
@@ -98,6 +100,11 @@ function verifyPoint(){
 }
 function verifyEndgame() {
     if (score === (numberOfCards / 2)){
-        alert(`Você ganhou em ${playCount} jogadas!`)
+        alert(`Você ganhou em ${playCount} jogadas!`);
+        if (confirm("Jogar novamente?")){
+            score = 0;
+            playCount = 0;
+            setupGame()
+        }
     }
 }
