@@ -1,10 +1,10 @@
 // Inicio do setup
 let numberOfCards;
-setupGame()
+setupGame();
 function setupGame() {
     numberOfCards = getNumberOfCards();
-    aswers = generateAnswers(numberOfCards);
-    generateCards(numberOfCards, aswers);
+    answers = generateAnswers(numberOfCards);
+    generateCards(numberOfCards, answers);
 }
 function getNumberOfCards() {
     let input = Number(prompt("Com quantas cartas deseja jogar?"));
@@ -14,25 +14,24 @@ function getNumberOfCards() {
     return input;
 }
 function generateAnswers(numberOfCards) {
-    let aswers = [];
+    let answers = [];
     for (let key = 0; key < numberOfCards / 2; key ++) {
-        aswers.push(key);
-        aswers.push(key);       
+        answers.push(key);
+        answers.push(key);       
     }
-    shuffle(aswers);
-    return aswers;
+    shuffle(answers);
+    return answers;
 }
 function shuffle(array) { // Peguei esse aqui no StackOverflow, parece ser mais eficiente
     let currentIndex = array.length,  randomIndex;
     while (0 !== currentIndex) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
     }
     return array;
 }
-function generateCards(numberOfCards, aswers) {
+function generateCards(numberOfCards, answers) {
     const backFaces = [
         "metalparrot",
         "bobrossparrot",
@@ -42,7 +41,7 @@ function generateCards(numberOfCards, aswers) {
         "tripletsparrot",
         "unicornparrot",
     ];
-    const gameArea = document.querySelector(".content");
+    const gameArea = document.querySelector("main");
     gameArea.innerHTML = "";
     for (let i = 0; i < numberOfCards; i++) {
         gameArea.innerHTML += `<div class="card" onclick="verifyPlay(this)">
@@ -50,7 +49,7 @@ function generateCards(numberOfCards, aswers) {
             <img src="images/front.png">
         </div>
         <div class="back-face face">
-            <img src="images/${backFaces[aswers[i]]}.gif">
+            <img src="images/${backFaces[answers[i]]}.gif">
         </div>
     </div>`;
     }
@@ -68,7 +67,7 @@ function verifyPlay(card) {
             antiSpam = true;
             setTimeout(function () {
                 antiSpam = false;
-            }, 1200)
+            }, 1100)
         }
         playCount++;
         turnCard(card);
@@ -81,12 +80,12 @@ function turnCard(card){
         isFirstOfPair = false;
     }else{
         secondCard = card;
-        verifyPoint()
+        verifyPoint();
         isFirstOfPair = true;
     }
 }
 function verifyPoint(){
-    if (firstCard.innerHTML === secondCard.innerHTML){
+    if (firstCard.lastElementChild.innerHTML === secondCard.lastElementChild.innerHTML){
         firstCard = null;
         secondCard = null;
         score++;
@@ -104,7 +103,8 @@ function verifyEndgame() {
         if (confirm("Jogar novamente?")){
             score = 0;
             playCount = 0;
-            setupGame()
+            setupGame();
         }
     }
 }
+// Fim da gameplay
